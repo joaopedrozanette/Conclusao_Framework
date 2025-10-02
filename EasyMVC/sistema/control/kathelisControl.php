@@ -24,7 +24,7 @@ class KathelisControl {
     }
 
     function inserir(){
-        // NUNCA seta o id aqui; no create o id é gerado pelo BD
+        // Não seta o id aqui, é gerado automatico pelo bd
         $this->kathelis->setNome($_POST['nome'] ?? '');
 		$this->kathelis->setEmail($_POST['email'] ?? '');
 		
@@ -43,7 +43,7 @@ class KathelisControl {
     }
 
     function alterar(){
-        // No editar o hidden 'id' existe; valida antes de usar
+        // No editar o hidden '{$pk}' existe; valida antes de usar
         $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
         if ($id <= 0) {
             header("Location:../view/listaKathelis.php");

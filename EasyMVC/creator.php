@@ -167,7 +167,7 @@ EOT;
         $nomeTabela = array_values((array) $tabela)[0];
         $atributosObj = $this->buscaAtributos($nomeTabela);
 
-        // Descobrir PK e listas de atributos
+        // Descobrir primary key e listas de atributos
         $pk = '';
         $campos = [];
         foreach ($atributosObj as $a) {
@@ -176,14 +176,14 @@ EOT;
         }
         $camposSemPK = array_values(array_filter($campos, fn($c) => $c !== $pk));
 
-        // Setters para INSERT (sem id)
+        // Setters para INSERT sem id
         $postsInsert = "";
         foreach ($camposSemPK as $c) {
             $C = ucfirst($c);
             $postsInsert .= "\$this->{$nomeTabela}->set{$C}(\$_POST['{$c}'] ?? '');\n\t\t";
         }
 
-        // Setters para UPDATE (sem id) + setId validado
+        // Setters para update sem id e setId validado
         $postsUpdate = "";
         foreach ($camposSemPK as $c) {
             $C = ucfirst($c);
@@ -368,30 +368,51 @@ EOT;
     function classesView()
 {
     //formulários
-    foreach ($this->tabelas as $tabela) {
-        $nomeTabela = array_values((array) $tabela)[0];
-        $atributos = $this->buscaAtributos($nomeTabela);
-        $formCampos = "";
-        
-        foreach ($atributos as $atributo) {
-            $field = $atributo->Field;
-            $isPk  = ($atributo->Key === "PRI");
+     foreach ($this->tabelas as $tabela) {
+            $nomeTabela = array_values((array) $tabela)[0];
+            $atributos = $this->buscaAtributos($nomeTabela);
+            $formCampos = "";
+            $formCamposComId = "";
+            foreach ($atributos as $atributo) {
+                $formCamposComId .= "<label for='{$atributo->Field}'>{$atributo->Field}</label>\n";
 
-            if ($isPk) {
-                // id -> so leitura no form, hidden no editar
-                $formCampos .= "<label for='{$field}_visu'>id</label>\n";
-                $formCampos .= "<input id='{$field}_visu' type='text' readonly class='readonly' " .
-                    "value='<?php echo \$obj ? \$obj['{$field}'] : \"(automático)\"; ?>'><br>\n";
-                $formCampos .= "<?php if(\$obj): ?>\n";
-                $formCampos .= "<input type='hidden' name='{$field}' value='<?php echo \$obj['{$field}']; ?>'>\n";
-                $formCampos .= "<?php endif; ?>\n";
-            } else {
-                $formCampos .= "<label for='{$field}'>{$field}</label>\n";
+                if ($atributo->Type === "int") {
+                    $formCamposComId .= "<input type='number' " .
+                        "value='<?php echo \$obj?\$obj['{$atributo->Field}']:''; ?>'" .
+                        "name='{$atributo->Field}' class='mt-3'><br>\n";
+
+                    if ($atributo->Key === "PRI") {
+                        $formCampos .= "<input type='hidden' " .
+                            "value='<?php echo \$obj?\$obj['{$atributo->Field}']:''; ?>'" .
+                            "name='{$atributo->Field}' class='mt-3'><br>\n";
+
+                        continue;
+                    }
+
+                    $formCampos .= "<label for='{$atributo->Field}'>{$atributo->Field}</label>\n";
+                    $formCampos .= "<input type='number' " .
+                        "value='<?php echo \$obj?\$obj['{$atributo->Field}']:''; ?>'" .
+                        "name='{$atributo->Field}' class='mt-3'><br>\n";
+
+                    continue;
+                }
+                $formCamposComId .= "<input type='text' " .
+                    "value='<?php echo \$obj?\$obj['{$atributo->Field}']:''; ?>'" .
+                    "name='{$atributo->Field}' class='mt-3'><br>\n";
+
+                if ($atributo->Key === "PRI") {
+                    $formCampos .= "<input type='hidden' " .
+                        "value='<?php echo \$obj?\$obj['{$atributo->Field}']:''; ?>'" .
+                        "name='{$atributo->Field}' class='mt-3'><br>\n";
+
+                    continue;
+                }
+
+                $formCampos .= "<label for='{$atributo->Field}'>{$atributo->Field}</label>\n";
                 $formCampos .= "<input type='text' " .
-                    "value='<?php echo \$obj?\$obj['{$field}']:''; ?>' " .
-                    "name='{$field}' id='{$field}'><br>\n";
+                    "value='<?php echo \$obj?\$obj['{$atributo->Field}']:''; ?>'" .
+                    "name='{$atributo->Field}' class='mt-3'><br>\n";
             }
-        }
 
         $conteudo = <<<HTML
 <?php
@@ -473,7 +494,7 @@ EOT;
         foreach ($this->tabelas as $tabela) {
             $nomeTabela = array_values((array)$tabela)[0];
             $nomeTabelaUCfirst = ucfirst($nomeTabela);
-            $formularios .= "<a href='./view/{$nomeTabelaUCfirst}.php' target='iframe'> Cadastrar {$nomeTabelaUCfirst}</a>\n";
+            $formularios .= "<a href='./view/{$nomeTabela}.php' target='iframe'> Cadastrar {$nomeTabela}</a>\n";
             $listas .= "<a href='./view/lista{$nomeTabelaUCfirst}.php' target='iframe'> Listar {$nomeTabelaUCfirst}</a>\n";
 
         }

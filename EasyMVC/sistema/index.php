@@ -94,7 +94,7 @@
         <li>
             <a href="#">Formulários</a>
             <ul>
-                <a href='./view/Kathelis.php' target='iframe'> Cadastrar Kathelis</a>
+                <a href='./view/kathelis.php' target='iframe'> Cadastrar kathelis</a>
 
             </ul>
         </li>

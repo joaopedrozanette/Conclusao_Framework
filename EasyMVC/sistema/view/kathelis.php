@@ -13,15 +13,11 @@
     <body>
         <form action="../control/kathelisControl.php?a=<?php echo $acao ?>" method="post">
         <h1>Cadastro de kathelis</h1>
-            <label for='id_visu'>id</label>
-<input id='id_visu' type='text' readonly class='readonly' value='<?php echo $obj ? $obj['id'] : "(automático)"; ?>'><br>
-<?php if($obj): ?>
-<input type='hidden' name='id' value='<?php echo $obj['id']; ?>'>
-<?php endif; ?>
+            <input type='hidden' value='<?php echo $obj?$obj['id']:''; ?>'name='id' class='mt-3'><br>
 <label for='nome'>nome</label>
-<input type='text' value='<?php echo $obj?$obj['nome']:''; ?>' name='nome' id='nome'><br>
+<input type='text' value='<?php echo $obj?$obj['nome']:''; ?>'name='nome' class='mt-3'><br>
 <label for='email'>email</label>
-<input type='text' value='<?php echo $obj?$obj['email']:''; ?>' name='email' id='email'><br>
+<input type='text' value='<?php echo $obj?$obj['email']:''; ?>'name='email' class='mt-3'><br>
 
              <button type="submit">Enviar</button>
         </form>
