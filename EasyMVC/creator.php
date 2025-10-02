@@ -176,7 +176,7 @@ EOT;
         }
         $camposSemPK = array_values(array_filter($campos, fn($c) => $c !== $pk));
 
-        // Setters para INSERT sem id
+        // Setters para insert sem id
         $postsInsert = "";
         foreach ($camposSemPK as $c) {
             $C = ucfirst($c);
@@ -307,7 +307,7 @@ EOT;
             $AtributosMetodos .= "\${$atributo}=\$obj->get{$atr}();\n";
         }
 
-        // remove o campo id do INSERT
+        // remove o campo id do insert
         $atributosSemId = array_values(array_filter($atributos, function ($c) use ($id) {
             return $c !== $id;
         }));
